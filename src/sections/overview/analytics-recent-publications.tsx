@@ -28,7 +28,7 @@ type Props = CardProps & {
   }[];
 };
 
-export function AnalyticsNews({ title, subheader, list, sx, ...other }: Props) {
+export function AnalyticsPublication({ title, subheader, list, sx, ...other }: Props) {
   return (
     <Card sx={sx} {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
@@ -47,7 +47,7 @@ export function AnalyticsNews({ title, subheader, list, sx, ...other }: Props) {
           color="inherit"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
         >
-          View all
+          View all Publications
         </Button>
       </Box>
     </Card>
