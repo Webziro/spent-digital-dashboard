@@ -20,7 +20,7 @@ export function OverviewAnalyticsView() {
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Hi, Welcome back! 👋
+        Hi, Welcome back Admin! 👋
       </Typography>
 
       <Grid container spacing={3}>
@@ -29,7 +29,7 @@ export function OverviewAnalyticsView() {
             title="Researches"
             percent={2.6}
             total={714000}
-            icon={<img alt="Researches" src="/assets/icons/glass/research-icons.svg" />}
+              icon={<img alt="Researches" src="/assets/icons/glass/ic-glass-researches.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
               series: [22, 8, 35, 50, 82, 84, 77, 12],
@@ -39,11 +39,11 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="New users"
+            title="Publications"
             percent={-0.1}
             total={1352831}
             color="secondary"
-            icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
+            icon={<img alt="Publications" src="/assets/icons/glass/ic-glass-publications.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
               series: [56, 47, 40, 62, 73, 30, 23, 54],
@@ -53,11 +53,11 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Purchase orders"
+            title="Programs"
             percent={2.8}
             total={1723315}
             color="warning"
-            icon={<img alt="Purchase orders" src="/assets/icons/glass/ic-glass-buy.svg" />}
+            icon={<img alt="Programs" src="/assets/icons/glass/ic-glass-programs.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
               series: [40, 70, 50, 28, 70, 75, 7, 64],
@@ -67,11 +67,11 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Messages"
+            title="Partners"
             percent={3.6}
             total={234}
             color="error"
-            icon={<img alt="Messages" src="/assets/icons/glass/ic-glass-message.svg" />}
+            icon={<img alt="Partners" src="/assets/icons/glass/ic-glass-partners.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
               series: [56, 30, 23, 54, 47, 40, 62, 73],
