@@ -14,9 +14,9 @@ import {
 // ----------------------------------------------------------------------
 
 export const _myAccount = {
-  displayName: 'Jaydon Frankie',
-  email: 'demo@minimals.cc',
-  photoURL: '/assets/images/avatar/avatar-25.webp',
+  displayName: 'Super Admin',
+  email: 'admin@spentdigitallab.com',
+  photoURL: '/assets/images/avatar/avatar-25.svg',
 };
 
 // ----------------------------------------------------------------------
