@@ -175,33 +175,7 @@ export const _description = (index: number) =>
     'The automobile layout consists of a front-engine design, with transaxle-type transmissions mounted at the rear of the engine and four wheel drive',
   ][index];
 
-export const _taskNames = (index: number) =>
-  [
-    `Prepare Monthly Financial Report`,
-    `Design New Marketing Campaign`,
-    `Analyze Customer Feedback`,
-    `Update Website Content`,
-    `Conduct Market Research`,
-    `Develop Software Application`,
-    `Organize Team Meeting`,
-    `Create Social Media Posts`,
-    `Review Project Plan`,
-    `Implement Security Protocols`,
-    `Write Technical Documentation`,
-    `Test New Product Features`,
-    `Manage Client Inquiries`,
-    `Train New Employees`,
-    `Coordinate Logistics`,
-    `Monitor Network Performance`,
-    `Develop Training Materials`,
-    `Draft Press Release`,
-    `Prepare Budget Proposal`,
-    `Evaluate Vendor Proposals`,
-    `Perform Data Analysis`,
-    `Conduct Quality Assurance`,
-    `Plan Event Logistics`,
-    `Optimize SEO Strategies`,
-  ][index];
+
 
 export const _productNames = (index: number) =>
   [

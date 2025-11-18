@@ -5,7 +5,6 @@ import {
   _company,
   _boolean,
   _fullName,
-  _taskNames,
   _postTitles,
   _description,
   _productNames,
@@ -153,11 +152,6 @@ export const _traffic = [
     total: 84900,
   },
 ];
-
-export const _tasks = Array.from({ length: 5 }, (_, index) => ({
-  id: _id(index),
-  name: _taskNames(index),
-}));
 
 // ----------------------------------------------------------------------
 
