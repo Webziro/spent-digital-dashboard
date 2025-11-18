@@ -15,7 +15,7 @@ import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export function SignInView() {
+export function RegisterView() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +32,18 @@ export function SignInView() {
         flexDirection: 'column',
       }}
     >
+
+    <TextField
+        fullWidth
+        name="name"
+        label="Name"
+        defaultValue="Admin"
+        sx={{ mb: 3 }}
+        slotProps={{
+          inputLabel: { shrink: true },
+        }}
+      />    
+
       <TextField
         fullWidth
         name="email"
@@ -43,9 +55,6 @@ export function SignInView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
-        Forgot password?
-      </Link>
 
       <TextField
         fullWidth
@@ -76,7 +85,7 @@ export function SignInView() {
         variant="contained"
         onClick={handleSignIn}
       >
-        Sign in
+        Register
       </Button>
     </Box>
   );
@@ -92,17 +101,15 @@ export function SignInView() {
           mb: 5,
         }}
       >
-        <Typography variant="h5">Sign in</Typography>
+        <Typography variant="h5">Register</Typography>
         <Typography
           variant="body2"
           sx={{
             color: 'text.secondary',
           }}
         >
-          {/* Add the register link here */}  
           Don’t have an account?
-          <Link variant="subtitle2" sx={{ ml: 0.5 }} role="button" 
-          onClick={() => router.push('/register')}  >
+          <Link variant="subtitle2" sx={{ ml: 0.5 }}>
             Get started
           </Link>
         </Typography>
