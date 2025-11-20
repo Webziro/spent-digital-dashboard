@@ -4,8 +4,8 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
 import Divider from '@mui/material/Divider';
+import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -83,7 +83,7 @@ export function SignInView() {
         }}
       />
 
-      <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
+      <Link variant="body2" color="success" sx={{ mb: 1.5 }}>
         Forgot password?
       </Link>
 
@@ -113,7 +113,7 @@ export function SignInView() {
         fullWidth
         size="large"
         type="submit"
-        color="inherit"
+        color="success"
         variant="contained"
         onClick={handleSignIn}
       >
