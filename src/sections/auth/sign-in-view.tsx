@@ -2,7 +2,9 @@ import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -13,16 +15,53 @@ import { useRouter } from 'src/routes/hooks';
 
 import { Iconify } from 'src/components/iconify';
 
+// auth API base
+const rawBase = import.meta.env.VITE_API_BASE as string | undefined;
+const API_AUTH = rawBase ? `${rawBase.replace(/\/$/, '')}/api/auth` : '/api/auth';
+
+function normalizeAuthLoginUrl(base: string) {
+  // remove any trailing /login or trailing slash, then append /login
+  return `${base.replace(/\/login\/?$/, '').replace(/\/$/, '')}/login`;
+}
+
 // ----------------------------------------------------------------------
 
 export function SignInView() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('hello@gmail.com');
+  const [password, setPassword] = useState('@demo1234');
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message?: string; severity?: 'success' | 'error' }>({ open: false });
 
-  const handleSignIn = useCallback(() => {
-    router.push('/');
-  }, [router]);
+  const handleSignIn = useCallback(async () => {
+    try {
+      const loginUrl = normalizeAuthLoginUrl(API_AUTH);
+      // log for debugging wrong env or proxy issues
+      console.info('API_AUTH', API_AUTH, 'loginUrl', loginUrl);
+
+      const res = await fetch(loginUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        // network ok but server responded error
+        throw new Error(body?.message || `Login failed (${res.status})`);
+      }
+      // expect token in body.token or body.data.token
+      const token = body.token ?? body.data?.token ?? body.accessToken;
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      setSnackbar({ open: true, message: 'Signed in', severity: 'success' });
+      router.push('/');
+    } catch (err: any) {
+      console.error('signin error', err);
+      setSnackbar({ open: true, message: err?.message ?? 'Sign in failed', severity: 'error' });
+    }
+  }, [router, email, password]);
 
   const renderForm = (
     <Box
@@ -36,7 +75,8 @@ export function SignInView() {
         fullWidth
         name="email"
         label="Email address"
-        defaultValue="hello@gmail.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         sx={{ mb: 3 }}
         slotProps={{
           inputLabel: { shrink: true },
@@ -51,7 +91,8 @@ export function SignInView() {
         fullWidth
         name="password"
         label="Password"
-        defaultValue="@demo1234"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         type={showPassword ? 'text' : 'password'}
         slotProps={{
           inputLabel: { shrink: true },
@@ -107,6 +148,16 @@ export function SignInView() {
           </Link>
         </Typography>
       </Box>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ open: false })}
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+      >
+        <Alert severity={snackbar.severity ?? 'success'} onClose={() => setSnackbar({ open: false })}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       {renderForm}
       <Divider sx={{ my: 3, '&::before, &::after': { borderTopStyle: 'dashed' } }}>
         <Typography

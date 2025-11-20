@@ -67,13 +67,19 @@ async function fetchResearch(): Promise<Research[]> {
 
 async function createResearch(payload: Research) {
   try {
+    // include auth header if token exists
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
     const res = await fetch(API_BASE, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
+      if (res.status === 401) throw new Error(`Not authorized (401): ${text || 'Please login as admin'}`);
       throw new Error(`Failed to create (${res.status} ${res.statusText}) ${text}`);
     }
     return res.json();
@@ -84,13 +90,18 @@ async function createResearch(payload: Research) {
 
 async function updateResearch(id: string, payload: Research) {
   try {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
     const res = await fetch(`${API_BASE}/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
+      if (res.status === 401) throw new Error(`Not authorized (401): ${text || 'Please login as admin'}`);
       throw new Error(`Failed to update (${res.status} ${res.statusText}) ${text}`);
     }
     return res.json();
@@ -101,9 +112,14 @@ async function updateResearch(id: string, payload: Research) {
 
 async function deleteResearch(id: string) {
   try {
-    const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE', headers });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
+      if (res.status === 401) throw new Error(`Not authorized (401): ${text || 'Please login as admin'}`);
       throw new Error(`Failed to delete (${res.status} ${res.statusText}) ${text}`);
     }
     return res.json();
