@@ -24,6 +24,10 @@ import type {
  * @from {@link file://./core/palette.ts}
  */
 declare module '@mui/material/styles' {
+  // shape
+  interface Shape {
+    borderRadius: number;
+  }
   // grey
   interface Color extends GreyExtend {}
   // text
@@ -35,6 +39,14 @@ declare module '@mui/material/styles' {
   // primary, secondary, info, success, warning, error
   interface PaletteColor extends PaletteColorExtend {}
   interface SimplePaletteColorOptions extends Partial<PaletteColorExtend> {}
+}
+
+// Make sure @mui/system Theme references the same Theme type so sx callbacks receive a typed theme
+declare module '@mui/system' {
+  // re-export the Theme from @mui/material/styles so the `theme` param in sx callbacks is typed
+  interface Theme extends import('@mui/material/styles').Theme {}
+  // also ensure ThemeOptions is linked for consistency
+  interface ThemeOptions extends import('@mui/material/styles').ThemeOptions {}
 }
 
 /**

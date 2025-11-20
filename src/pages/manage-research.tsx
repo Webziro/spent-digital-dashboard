@@ -1,16 +1,18 @@
 import { CONFIG } from 'src/config-global';
 
-import { UserView } from 'src/sections/user/view';
+import { ManageResearchView } from 'src/sections/research/view/manage-research-view';
 
 // ----------------------------------------------------------------------
 
 export default function Page() {
   return (
     <>
-      <title>{`Users - ${CONFIG.appName}`}</title>
+      <title>{`Manage-Research - ${CONFIG.appName}`}</title>
 
-      <UserView />
+      <ManageResearchView />
     </>
   );
 }
- 
+
+
+

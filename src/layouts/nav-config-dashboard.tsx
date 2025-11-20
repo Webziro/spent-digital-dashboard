@@ -39,6 +39,11 @@ export const navData = [
     icon: icon('ic-blog'),
   },
   {
+    title: 'Research',
+    path: '/manage-research',
+    icon: icon('ic-analytics'),
+  },
+  {
     title: 'Sign in',
     path: '/sign-in',
     icon: icon('ic-lock'),
@@ -49,3 +54,4 @@ export const navData = [
     icon: icon('ic-disabled'),
   },
 ];
+
