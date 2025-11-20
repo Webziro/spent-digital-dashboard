@@ -31,6 +31,8 @@ type Research = {
   _id?: string;
   title: string;
   summary: string;
+  description?: string;
+  category?: string;
   tags: string[];
   author: string;
   pdfUrl: string;
@@ -159,7 +161,7 @@ export function ManageResearchView() {
   }, []);
 
   const handleOpenCreate = useCallback(() => {
-    setEditing({ title: '', summary: '', tags: [], author: '', pdfUrl: '' });
+    setEditing({ title: '', summary: '', description: '', category: '', tags: [], author: '', pdfUrl: '' });
     setOpen(true);
   }, []);
 
@@ -302,6 +304,22 @@ export function ManageResearchView() {
               multiline
               minRows={3}
               onChange={(e) => setEditing((prev) => (prev ? { ...prev, summary: e.target.value } : prev))}
+              fullWidth
+            />
+            <TextField
+              label="Description"
+              value={editing?.description ?? ''}
+              multiline
+              minRows={3}
+              onChange={(e) => setEditing((prev) => (prev ? { ...prev, description: e.target.value } : prev))}
+              helperText="More detailed description (required)"
+              fullWidth
+            />
+            <TextField
+              label="Category"
+              value={editing?.category ?? ''}
+              onChange={(e) => setEditing((prev) => (prev ? { ...prev, category: e.target.value } : prev))}
+              helperText="Category (required)"
               fullWidth
             />
             <Autocomplete
