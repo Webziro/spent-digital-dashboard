@@ -37,39 +37,71 @@ type Research = {
   createdAt?: string;
 };
 
-//Connect Backend Mongo DB hosted on Render 
-const API_BASE = `${import.meta.env.VITE_API_BASE}/api/research`;
+// Connect Backend Mongo DB hosted on Render
+// If VITE_API_BASE is set use it (normalize trailing slash), otherwise use local proxy path `/api/research`.
+const rawBase = import.meta.env.VITE_API_BASE as string | undefined;
+const API_BASE = rawBase
+  ? `${rawBase.replace(/\/$/, '')}/api/research`
+  : '/api/research';
 
 async function fetchResearch(): Promise<Research[]> {
-  const res = await fetch(API_BASE);
-  if (!res.ok) throw new Error('Failed to fetch');
-  return res.json();
+  try {
+    const res = await fetch(API_BASE);
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Failed to fetch (${res.status} ${res.statusText}) ${text}`);
+    }
+    return res.json();
+  } catch (err: any) {
+    throw new Error(`Network error when fetching ${API_BASE}: ${err?.message ?? err}`);
+  }
 }
 
 async function createResearch(payload: Research) {
-  const res = await fetch(API_BASE, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error('Failed to create');
-  return res.json();
+  try {
+    const res = await fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Failed to create (${res.status} ${res.statusText}) ${text}`);
+    }
+    return res.json();
+  } catch (err: any) {
+    throw new Error(`Network error when creating ${API_BASE}: ${err?.message ?? err}`);
+  }
 }
 
 async function updateResearch(id: string, payload: Research) {
-  const res = await fetch(`${API_BASE}/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error('Failed to update');
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Failed to update (${res.status} ${res.statusText}) ${text}`);
+    }
+    return res.json();
+  } catch (err: any) {
+    throw new Error(`Network error when updating ${API_BASE}/${id}: ${err?.message ?? err}`);
+  }
 }
 
 async function deleteResearch(id: string) {
-  const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('Failed to delete');
-  return res.json();
+  try {
+    const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Failed to delete (${res.status} ${res.statusText}) ${text}`);
+    }
+    return res.json();
+  } catch (err: any) {
+    throw new Error(`Network error when deleting ${API_BASE}/${id}: ${err?.message ?? err}`);
+  }
 }
 
 export function ManageResearchView() {
@@ -91,7 +123,11 @@ export function ManageResearchView() {
     setLoading(true);
     fetchResearch()
       .then((data) => mounted && setItems(data))
-      .catch(() => mounted && setSnackbar({ open: true, message: 'Failed to load', severity: 'error' }))
+      .catch((err: any) => {
+        // surface server error message for easier debugging
+        console.error('fetchResearch error', err);
+        if (mounted) setSnackbar({ open: true, message: err?.message ?? 'Failed to load', severity: 'error' });
+      })
       .finally(() => mounted && setLoading(false));
     return () => {
       mounted = false;
@@ -126,8 +162,9 @@ export function ManageResearchView() {
         setSnackbar({ open: true, message: 'Created', severity: 'success' });
       }
       handleClose();
-    } catch {
-      setSnackbar({ open: true, message: 'Save failed', severity: 'error' });
+    } catch (err: any) {
+      console.error('save error', err);
+      setSnackbar({ open: true, message: err?.message ?? 'Save failed', severity: 'error' });
     }
   }, [editing, handleClose]);
 
@@ -137,8 +174,9 @@ export function ManageResearchView() {
       await deleteResearch(toDelete._id);
       setItems((prev) => prev.filter((p) => p._id !== toDelete._id));
       setSnackbar({ open: true, message: 'Deleted', severity: 'success' });
-    } catch {
-      setSnackbar({ open: true, message: 'Delete failed', severity: 'error' });
+    } catch (err: any) {
+      console.error('delete error', err);
+      setSnackbar({ open: true, message: err?.message ?? 'Delete failed', severity: 'error' });
     } finally {
       setConfirmOpen(false);
       setToDelete(null);

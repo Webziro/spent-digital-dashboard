@@ -31,6 +31,18 @@ export default defineConfig({
       },
     ],
   },
-  server: { port: PORT, host: true },
+  server: {
+    port: PORT,
+    host: true,
+    proxy: {
+      // Proxy `/api` requests to the Render backend to avoid CORS during development
+      '/api': {
+        target: 'https://innovation-lab-qhgb.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        // keep the /api path as-is
+      },
+    },
+  },
   preview: { port: PORT, host: true },
 });
