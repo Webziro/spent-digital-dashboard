@@ -51,7 +51,15 @@ async function fetchResearch(): Promise<Research[]> {
       const text = await res.text().catch(() => '');
       throw new Error(`Failed to fetch (${res.status} ${res.statusText}) ${text}`);
     }
-    return res.json();
+    const body = await res.json().catch(() => null);
+    // Normalize responses that wrap data in an object: { success, data: [...] }
+    if (Array.isArray(body)) return body as Research[];
+    if (body && Array.isArray(body.data)) return body.data as Research[];
+    // Sometimes API returns { items: [...] }
+    if (body && Array.isArray(body.items)) return body.items as Research[];
+    // If server returns a single object, return it as single-element array
+    if (body && typeof body === 'object') return [body as Research];
+    return [];
   } catch (err: any) {
     throw new Error(`Network error when fetching ${API_BASE}: ${err?.message ?? err}`);
   }
