@@ -97,31 +97,11 @@ export const _products = [...Array(24)].map((_, index) => {
 
 // ----------------------------------------------------------------------
 
-export const _langs = [
-  {
-    value: 'en',
-    label: 'English',
-    icon: '/assets/icons/flags/ic-flag-en.svg',
-  },
-  {
-    value: 'de',
-    label: 'German',
-    icon: '/assets/icons/flags/ic-flag-de.svg',
-  },
-  {
-    value: 'fr',
-    label: 'French',
-    icon: '/assets/icons/flags/ic-flag-fr.svg',
-  },
-];
-
-// ----------------------------------------------------------------------
-
 export const _timeline = [...Array(5)].map((_, index) => ({
   id: _id(index),
   title: [
-    '1983, orders, $4220',
-    '12 Invoices have been paid',
+    'Ai and Robotics Conference 2026',
+    'Application for Research Grant',
     'Order #37745 from September',
     'New order placed #XF-2356',
     'New order placed #XF-2346',
@@ -130,33 +110,33 @@ export const _timeline = [...Array(5)].map((_, index) => ({
   time: _times(index),
 }));
 
-export const _traffic = [
-  {
-    value: 'facebook',
-    label: 'Facebook',
-    total: 19500,
-  },
-  {
-    value: 'google',
-    label: 'Google',
-    total: 91200,
-  },
-  {
-    value: 'linkedin',
-    label: 'Linkedin',
-    total: 69800,
-  },
-  {
-    value: 'twitter',
-    label: 'Twitter',
-    total: 84900,
-  },
-];
+// --- Runtime helper: map live research items to timeline entries ---
+import { getLatestResearch } from 'src/api/research';
 
-// ----------------------------------------------------------------------
+export async function fetchTimelineFromResearch(limit = 5) {
+  try {
+    const items = await getLatestResearch(limit);
+    return items.map((it) => ({
+      id: it._id ?? it.title,
+      title: it.title,
+      type: 'research',
+      time: it.createdAt ?? new Date().toISOString(),
+    }));
+  } catch {
+    // On error, return the mock timeline as fallback
+    return _timeline;
+  }
+}
+
+// --- Exports for runtime usage ---
+// Promise that resolves to the dynamic timeline (initiated at module load).
+export const timelinePromise = fetchTimelineFromResearch();
+
+// Async helper consumers can call this to get the latest timeline entries.
+export const getTimeline = fetchTimelineFromResearch;
 
 export const _notifications = [
-  {
+  { 
     id: _id(1),
     title: 'Your order is placed',
     description: 'waiting for shipping',

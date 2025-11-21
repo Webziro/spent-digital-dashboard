@@ -27,7 +27,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 
-type Research = {
+export type Research = {
   _id?: string;
   title: string;
   summary: string;

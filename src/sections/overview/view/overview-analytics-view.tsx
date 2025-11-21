@@ -1,7 +1,9 @@
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
-import { _posts, _timeline } from 'src/_mock';
+import { useTimeline } from 'src/hooks/use-timeline';
+
+import { _posts } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
@@ -79,9 +81,15 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsOrderTimeline title="Order timeline" list={_timeline} />
+          {/* Use live timeline data (falls back to mock on error) */}
+          <LiveTimeline />
         </Grid>
       </Grid>
     </DashboardContent>
   );
+}
+
+function LiveTimeline() {
+  const { items } = useTimeline(5);
+  return <AnalyticsOrderTimeline title="Research timeline" list={items} />;
 }
