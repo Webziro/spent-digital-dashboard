@@ -35,10 +35,10 @@ export function Logo({
   const PRIMARY_DARKER = theme.vars.palette.primary.dark;
 
   const singleLogo = (
-   <img 
-        src="/public/favicon.ico" 
-        alt="Your Company Name Logo" 
-        style={{ height: '100%', width: 'auto' }} 
+    <img
+      src={`${import.meta.env.BASE_URL}favicon.ico`}
+      alt="Spent Digital lab logo"
+      style={{ height: '100%', width: 'auto' }}
     />
   );
 
