@@ -1,7 +1,7 @@
 // Lightweight API helper for research endpoints
 import type { Research } from 'src/sections/research/view/manage-research-view';
 
-// Normalize API base (same strategy as ManageResearchView)
+// Normalize API base (same as ManageResearchView)
 const rawBase = import.meta.env.VITE_API_BASE as string | undefined;
 export const API_BASE = rawBase ? `${rawBase.replace(/\/$/, '')}/api/research` : '/api/research';
 
