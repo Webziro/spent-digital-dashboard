@@ -18,40 +18,73 @@ export const navData = [
     path: '/',
     icon: icon('ic-analytics'),
   },
+  // {
+  //   title: 'User',
+  //   path: '/user',
+  //   icon: icon('ic-user'),
+  // },
+  // {
+  //   title: 'Product',
+  //   path: '/products',
+  //   icon: icon('ic-cart'),
+  //   info: (
+  //     <Label color="error" variant="inverted">
+  //       +3
+  //     </Label>
+  //   ),
+  // },
+  // {
+  //   title: 'Blog',
+  //   path: '/blog',
+  //   icon: icon('ic-blog'),
+  // },
   {
-    title: 'User',
-    path: '/user',
-    icon: icon('ic-user'),
-  },
-  {
-    title: 'Product',
-    path: '/products',
-    icon: icon('ic-cart'),
+    title: 'Research',
+    path: '/manage-research',
+    icon: icon('research'),
     info: (
       <Label color="error" variant="inverted">
         +3
       </Label>
     ),
   },
-  {
-    title: 'Blog',
-    path: '/blog',
-    icon: icon('ic-blog'),
+
+ {
+    title: 'Publication',
+    path: '#',
+    icon: icon('publication'),
   },
+
   {
-    title: 'Research',
-    path: '/manage-research',
-    icon: icon('ic-analytics'),
+    title: 'Program',
+    path: '#',
+    icon: icon('ic-user'),
   },
+
   {
-    title: 'Sign in',
-    path: '/sign-in',
-    icon: icon('ic-lock'),
+    title: 'Partner',
+    path: '# ',
+    icon: icon('partners'),
   },
+
   {
-    title: 'Not found',
-    path: '/404',
+    title: 'Event',
+    path: '#',
     icon: icon('ic-disabled'),
   },
+
+
+
+
+  // {
+  //   title: 'Sign in',
+  //   path: '/sign-in',
+  //   icon: icon('ic-lock'),
+  // },
+  // {
+  //   title: 'Not found',
+  //   path: '/404',
+  //   icon: icon('ic-disabled'),
+  // },
 ];
 
