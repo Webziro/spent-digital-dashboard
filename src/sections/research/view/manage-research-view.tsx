@@ -31,11 +31,18 @@ export type Research = {
   _id?: string;
   title: string;
   summary: string;
+  abstract: string;
   description?: string;
   category?: string;
+  status?: 'ongoing' | 'completed' | 'published';
   tags: string[];
   author: string;
-  pdfUrl: string;
+  pdfUrl?: string;
+  pdfFile?: File;
+  coverImage?: File;
+  publishedDate?: string;
+  doi?: string;
+  isFeatured?: boolean;
   createdAt?: string;
 };
 
@@ -91,51 +98,77 @@ async function createResearch(payload: Research) {
   try {
     // include auth header if token exists
     const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = {};
     if (token) headers.Authorization = `Bearer ${token}`;
 
-    // If author is missing, try to fill it from the JWT so records are searchable by author
-    const bodyPayload: Research = { ...payload };
-    try {
-      const stored = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      const claims = parseJwt(stored);
-      const email = claims?.email || claims?.sub || claims?.username || null;
-      if ((!bodyPayload.author || !bodyPayload.author.trim()) && email) bodyPayload.author = email;
-    } catch {
-      // ignore parse errors
+    // Build FormData for multipart/form-data
+    const formData = new FormData();
+    formData.append('title', payload.title || '');
+    formData.append('summary', payload.summary || '');
+    formData.append('abstract', payload.abstract || '');
+    formData.append('description', payload.description || '');
+    formData.append('category', payload.category || '');
+    formData.append('status', payload.status || 'ongoing');
+    formData.append('tags', JSON.stringify(payload.tags || []));
+    formData.append('author', payload.author || '');
+    if (payload.publishedDate) formData.append('publishedDate', payload.publishedDate);
+    if (payload.doi) formData.append('doi', payload.doi);
+    if (payload.pdfFile) formData.append('pdfFile', payload.pdfFile);
+    if (payload.coverImage) formData.append('coverImage', payload.coverImage);
+
+    // If author is missing, try to fill it from the JWT
+    if (!payload.author || !payload.author.trim()) {
+      try {
+        const stored = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const claims = parseJwt(stored);
+        const email = claims?.email || claims?.sub || claims?.username || null;
+        if (email) formData.set('author', email);
+      } catch {
+        // ignore parse errors
+      }
     }
 
-    // Debug: log request details so we can compare with Postman
-    if (typeof console !== 'undefined' && typeof console.debug === 'function')
-      console.debug('createResearch: URL=', API_BASE, 'payload=', bodyPayload, 'headers=', headers ? Object.keys(headers) : headers);
-
+    console.log('Creating research with FormData');
+    console.log('API_BASE:', API_BASE);
+    
     const res = await fetch(API_BASE, {
       method: 'POST',
       headers,
-      body: JSON.stringify(bodyPayload),
+      body: formData,
+    }).catch((fetchErr) => {
+      console.error('Fetch error (network/CORS issue):', fetchErr);
+      throw fetchErr;
     });
 
-    const text = await res.text().catch(() => '');
-    // Try to parse JSON body (for logging) but keep raw text as fallback
-    let parsed: any = null;
-    try {
-      parsed = text ? JSON.parse(text) : null;
-    } catch {
-      parsed = text;
-    }
+    console.log('Research POST response status:', res.status, res.statusText);
 
-    // Debug: log response for easier diagnosis
-    if (typeof console !== 'undefined' && typeof console.debug === 'function')
-      console.debug('createResearch response:', { status: res.status, statusText: res.statusText, body: parsed });
+    // Read response body for debugging
+    let parsed: any = null;
+    let text = '';
+    try {
+      text = await res.text().catch(() => '');
+      if (text) {
+        try {
+          parsed = JSON.parse(text);
+          console.log('Response parsed JSON:', parsed);
+        } catch (e) {
+          console.log('Response raw text:', text);
+        }
+      }
+    } catch (e) {
+      console.error('Error reading response body', e);
+    }
 
     if (!res.ok) {
       if (res.status === 401) throw new Error(`Not authorized (401): ${((parsed ?? text) || 'Please login as admin')}`);
-      throw new Error(`Failed to create (${res.status} ${res.statusText}) ${parsed ?? text}`);
+      const errorMsg = typeof parsed === 'object' ? JSON.stringify(parsed) : (parsed ?? text);
+      throw new Error(`Failed to create (${res.status} ${res.statusText}) ${errorMsg}`);
     }
 
     // Return parsed JSON if available, otherwise raw text
     return parsed ?? text;
   } catch (err: any) {
+    console.error('createResearch error details:', err);
     throw new Error(`Network error when creating ${API_BASE}: ${err?.message ?? err}`);
   }
 }
@@ -252,7 +285,7 @@ export function ManageResearchView() {
   }, []);
 
   const handleOpenCreate = useCallback(() => {
-    setEditing({ title: '', summary: '', description: '', category: '', tags: [], author: '', pdfUrl: '' });
+    setEditing({ title: '', summary: '', abstract: '', description: '', category: '', status: 'ongoing', tags: [], author: '', pdfUrl: '' });
     setOpen(true);
   }, []);
 
@@ -289,7 +322,7 @@ export function ManageResearchView() {
     }
   }, [editing, handleClose]);
 
-  const isSaveDisabled = !(editing?.title && editing?.category && editing?.description);
+  const isSaveDisabled = !(editing?.title && editing?.abstract && editing?.category && editing?.description);
 
   const handleDelete = useCallback(async () => {
     if (!toDelete || !toDelete._id) return;
@@ -399,8 +432,17 @@ export function ManageResearchView() {
               label="Summary"
               value={editing?.summary ?? ''}
               multiline
-              minRows={3}
+              minRows={2}
               onChange={(e) => setEditing((prev) => (prev ? { ...prev, summary: e.target.value } : prev))}
+              fullWidth
+            />
+            <TextField
+              label="Abstract"
+              value={editing?.abstract ?? ''}
+              multiline
+              minRows={3}
+              onChange={(e) => setEditing((prev) => (prev ? { ...prev, abstract: e.target.value } : prev))}
+              helperText="Abstract (required, max 1000 chars)"
               fullWidth
             />
             <TextField
@@ -409,16 +451,40 @@ export function ManageResearchView() {
               multiline
               minRows={3}
               onChange={(e) => setEditing((prev) => (prev ? { ...prev, description: e.target.value } : prev))}
-              helperText="More detailed description (required)"
+              helperText="Detailed description (required)"
               fullWidth
             />
             <TextField
+              select
+              SelectProps={{ native: true }}
               label="Category"
               value={editing?.category ?? ''}
               onChange={(e) => setEditing((prev) => (prev ? { ...prev, category: e.target.value } : prev))}
               helperText="Category (required)"
               fullWidth
-            />
+            >
+              <option aria-label="None" value="" />
+              <option value="Blockchain Security">Blockchain Security</option>
+              <option value="Web3 Infrastructure">Web3 Infrastructure</option>
+              <option value="Digital Identity">Digital Identity</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Supply Chain">Supply Chain</option>
+              <option value="AI Integration">AI Integration</option>
+              <option value="Policy & Ethics">Policy & Ethics</option>
+            </TextField>
+            <TextField
+              select
+              SelectProps={{ native: true }}
+              label="Status"
+              value={editing?.status ?? 'ongoing'}
+              onChange={(e) => setEditing((prev) => (prev ? { ...prev, status: e.target.value as 'ongoing' | 'completed' | 'published' } : prev))}
+              helperText="Status (required)"
+              fullWidth
+            >
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+              <option value="published">Published</option>
+            </TextField>
             <Autocomplete
               multiple
               freeSolo
@@ -439,9 +505,18 @@ export function ManageResearchView() {
               fullWidth
             />
             <TextField
-              label="PDF URL"
-              value={editing?.pdfUrl ?? ''}
-              onChange={(e) => setEditing((prev) => (prev ? { ...prev, pdfUrl: e.target.value } : prev))}
+              label="Published Date"
+              type="date"
+              value={editing?.publishedDate ?? ''}
+              onChange={(e) => setEditing((prev) => (prev ? { ...prev, publishedDate: e.target.value } : prev))}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+            />
+            <TextField
+              label="DOI"
+              value={editing?.doi ?? ''}
+              onChange={(e) => setEditing((prev) => (prev ? { ...prev, doi: e.target.value } : prev))}
+              placeholder="e.g., 10.1000/spent.2024.001"
               fullWidth
             />
           </Box>

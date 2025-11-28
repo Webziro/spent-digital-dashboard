@@ -1,5 +1,5 @@
-import type { ButtonBaseProps } from '@mui/material/ButtonBase';
 import type { Theme } from '@mui/material/styles';
+import type { ButtonBaseProps } from '@mui/material/ButtonBase';
 
 import { useState, useCallback } from 'react';
 import { varAlpha } from 'minimal-shared/utils';

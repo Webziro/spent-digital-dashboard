@@ -1,4 +1,4 @@
-import type { CSSObject, Breakpoint, Theme } from '@mui/material/styles';
+import type { Theme, CSSObject, Breakpoint } from '@mui/material/styles';
 
 import { merge } from 'es-toolkit';
 

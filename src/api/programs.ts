@@ -1,74 +1,72 @@
-export type Publication = {
+// Lightweight API helper for programs endpoints
+export type Program = {
   _id?: string;
   title: string;
-  summary: string;
-  abstract: string;
-  description?: string;
-  category?: string;
-  tags: string[];
-  authors: string[];
-  pdfUrl: string;
+  description: string;
+  type: string;
+  applicationLink: string;
+  startDate: string;
+  applicationDeadline: string;
+  duration: string;
+  tags?: string[];
   coverImageUrl?: string;
-  publishedDate: string;
-  doi?: string;
-  citations?: number;
-  downloads?: number;
   isFeatured?: boolean;
-  createdBy?: string;
   createdAt?: string;
+  createdBy?: string;
+  publishedDate?: string;
+  abstract?: string;
+  category?: string;
+  pdfUrl?: string;
 };
 
-const rawBase = import.meta.env.VITE_PUBLICATIONS_API_BASE as string | undefined;
-export const API_BASE = rawBase ? `${rawBase.replace(/\/$/, '')}` : 'https://innovation-lab-qhgb.onrender.com/api/publications';
+const rawBase = import.meta.env.VITE_API_BASE as string | undefined;
+export const API_BASE = rawBase ? `${rawBase.replace(/\/$/, '')}/api/programs` : '/api/programs';
 
-/* removed unused parseJsonSafe helper (not referenced) */
-
-export async function fetchPublications(): Promise<Publication[]> {
+async function parseJsonSafe(res: Response) {
+  const text = await res.text().catch(() => '');
   try {
-    const res = await fetch(API_BASE);
-    if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      throw new Error(`Failed to fetch (${res.status} ${res.statusText}) ${text}`);
-    }
-    const body = await res.json().catch(() => null);
-
-    if (Array.isArray(body)) return body as Publication[];
-    if (body && Array.isArray(body.data)) return body.data as Publication[];
-    if (body && Array.isArray(body.items)) return body.items as Publication[];
-    if (body && typeof body === 'object') return [body as Publication];
-    return [];
-  } catch (err: any) {
-    throw new Error(`Network error when fetching ${API_BASE}: ${err?.message ?? err}`);
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return text;
   }
 }
 
-export async function createPublication(payload: Publication) {
+export async function fetchPrograms(params?: Record<string, string | number | boolean>): Promise<Program[]> {
+  const qs = params
+    ? '?' + Object.entries(params).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`).join('&')
+    : '';
+  const res = await fetch(`${API_BASE}${qs}`);
+  if (!res.ok) {
+    const body = await parseJsonSafe(res);
+    throw new Error(`Failed to fetch programs (${res.status}): ${body ?? res.statusText}`);
+  }
+  const body = await parseJsonSafe(res);
+  if (Array.isArray(body)) return body as Program[];
+  if (body && Array.isArray((body as any).data)) return (body as any).data as Program[];
+  if (body && Array.isArray((body as any).items)) return (body as any).items as Program[];
+  if (body && typeof body === 'object') return [body as Program];
+  return [];
+}
+
+export async function createProgram(payload: Program) {
   try {
     const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (token) headers.Authorization = `Bearer ${token}`;
 
-    const bodyPayload: Publication = { ...payload };
-
     const res = await fetch(API_BASE, {
       method: 'POST',
       headers,
-      body: JSON.stringify(bodyPayload),
+      body: JSON.stringify(payload),
     });
 
     const text = await res.text().catch(() => '');
     let parsed: any = text;
     try {
-      if (text) {
-        parsed = JSON.parse(text);
-      }
+      if (text) parsed = JSON.parse(text);
     } catch (e) {
       console.debug('Failed to parse JSON response', e);
     }
-
-    // Debug: log response for easier diagnosis
-    if (typeof console !== 'undefined' && typeof console.debug === 'function')
-      console.debug('createPublication response:', { status: res.status, statusText: res.statusText, body: parsed });
 
     if (!res.ok) {
       if (res.status === 401) throw new Error(`Not authorized (401): ${((parsed?.message || parsed) ?? text) || 'Please login as admin'}`);
@@ -81,7 +79,7 @@ export async function createPublication(payload: Publication) {
   }
 }
 
-export async function updatePublication(id: string, payload: Publication) {
+export async function updateProgram(id: string, payload: Program) {
   try {
     const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -103,7 +101,7 @@ export async function updatePublication(id: string, payload: Publication) {
   }
 }
 
-export async function deletePublication(id: string) {
+export async function deleteProgram(id: string) {
   try {
     const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('authToken') || localStorage.getItem('accessToken')) : null;
     const headers: Record<string, string> = {};
