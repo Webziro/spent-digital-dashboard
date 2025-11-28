@@ -25,6 +25,13 @@ export function OverviewAnalyticsView() {
   const [publicationsPercent, setPublicationsPercent] = useState<number | null>(null);
   const [programsTotal, setProgramsTotal] = useState<number | null>(null);
   const [programsPercent, setProgramsPercent] = useState<number | null>(null);
+  const [recentPublications, setRecentPublications] = useState<{
+    id: string;
+    title: string;
+    coverUrl: string;
+    description: string;
+    postedAt: string | number | null;
+  }[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -70,6 +77,17 @@ export function OverviewAnalyticsView() {
 
         const researchMetrics = computeMetrics(researchList);
         const publicationsMetrics = computeMetrics(publicationsList);
+        // Prepare recent publications for the Recent Publications widget
+        if (Array.isArray(publicationsList) && publicationsList.length) {
+          const list = publicationsList.slice(0, 5).map((p: any) => ({
+            id: p._id ?? p.title,
+            title: p.title ?? 'Untitled',
+            coverUrl: p.coverImageUrl ?? p.coverUrl ?? `/assets/images/cover/cover-1.webp`,
+            description: p.description ?? p.summary ?? p.abstract ?? '',
+            postedAt: p.publishedDate ?? p.createdAt ?? new Date().toISOString(),
+          }));
+          setRecentPublications(list);
+        }
         const programsMetrics = computeMetrics(programsList);
 
         setResearchTotal(researchMetrics.total);
@@ -158,7 +176,10 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsPublication title="Recent Publications" list={_posts.slice(0, 5)} />
+          <AnalyticsPublication
+            title="Recent Publications"
+            list={recentPublications && recentPublications.length ? recentPublications : _posts.slice(0, 5)}
+          />
         </Grid>
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
