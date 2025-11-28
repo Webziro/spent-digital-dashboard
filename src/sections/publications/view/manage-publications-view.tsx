@@ -375,3 +375,14 @@ export function ManagePublicationsView() {
     </DashboardContent>
   );
 }
+
+//Add Publication
+//Title: 
+//Summary: A brief overview of how AI is transforming research methodologies across various fields.
+//Abstract: This publication explores the integration of artificial intelligence in research, highlighting its benefits and challenges.
+//Description: The document delves into case studies where AI has significantly enhanced research outcomes, discussing tools and techniques employed.
+//Category: Research Paper
+//Tags: AI, Research, Technology
+//Authors: Dr. Jane Smith, Dr. John Doe
+//PDF URL: https://example.com/ai-research.pdf
+//Published Date: 2024-05-15
