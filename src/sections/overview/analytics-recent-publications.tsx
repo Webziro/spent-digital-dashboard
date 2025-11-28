@@ -9,6 +9,8 @@ import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import ListItemText from '@mui/material/ListItemText';
 
+import { useRouter } from 'src/routes/hooks';
+
 import { fToNow } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
@@ -29,6 +31,8 @@ type Props = CardProps & {
 };
 
 export function AnalyticsPublication({ title, subheader, list, sx, ...other }: Props) {
+  const router = useRouter();
+
   return (
     <Card sx={sx} {...other}>
       <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
@@ -46,6 +50,7 @@ export function AnalyticsPublication({ title, subheader, list, sx, ...other }: P
           size="small"
           color="inherit"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
+          onClick={() => router.push('/manage-publications')}
         >
           View all Publications
         </Button>
@@ -61,6 +66,8 @@ type ItemProps = BoxProps & {
 };
 
 function Item({ item, sx, ...other }: ItemProps) {
+  const router = useRouter();
+
   return (
     <Box
       sx={[
@@ -84,7 +91,7 @@ function Item({ item, sx, ...other }: ItemProps) {
       />
 
       <ListItemText
-        primary={<Link color="inherit">{item.title}</Link>}
+        primary={<Link color="inherit" onClick={() => router.push(`/publication/${item.id}`)}>{item.title}</Link>}
         secondary={item.description}
         slotProps={{
           primary: { noWrap: true },

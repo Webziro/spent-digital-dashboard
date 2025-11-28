@@ -1,4 +1,4 @@
-import type { CSSObject, Breakpoint } from '@mui/material/styles';
+import type { CSSObject, Breakpoint, Theme } from '@mui/material/styles';
 
 import { merge } from 'es-toolkit';
 
@@ -88,7 +88,7 @@ export function AuthLayout({
     <MainSection
       {...slotProps?.main}
       sx={[
-        (theme) => ({
+        (theme: Theme) => ({
           alignItems: 'center',
           p: theme.spacing(3, 2, 10, 2),
           [theme.breakpoints.up(layoutQuery)]: {
@@ -120,7 +120,7 @@ export function AuthLayout({
        *************************************** */
       cssVars={{ '--layout-auth-content-width': '420px', ...cssVars }}
       sx={[
-        (theme) => ({
+        (theme: Theme) => ({
           position: 'relative',
           '&::before': backgroundStyles(),
         }),

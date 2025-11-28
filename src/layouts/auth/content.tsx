@@ -1,4 +1,5 @@
 import type { BoxProps } from '@mui/material/Box';
+import type { Theme } from '@mui/material/styles';
 
 import { mergeClasses } from 'minimal-shared/utils';
 
@@ -15,7 +16,7 @@ export function AuthContent({ sx, children, className, ...other }: AuthContentPr
     <Box
       className={mergeClasses([layoutClasses.content, className])}
       sx={[
-        (theme) => ({
+        (theme: Theme) => ({
           py: 5,
           px: 3,
           width: 1,

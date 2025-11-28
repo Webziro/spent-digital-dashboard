@@ -51,7 +51,7 @@ export function HeaderSection({
       disableElevation={disableElevation}
       className={mergeClasses([layoutClasses.header, className])}
       sx={[
-        (theme) => ({
+        (theme: Theme) => ({
           ...(isOffset && {
             '--color': `var(--offset-color, ${theme.vars.palette.text.primary})`,
           }),
@@ -84,7 +84,7 @@ type HeaderRootProps = Pick<HeaderSectionProps, 'disableOffset' | 'disableElevat
 const HeaderRoot = styled(AppBar, {
   shouldForwardProp: (prop: string) =>
     !['isOffset', 'disableOffset', 'disableElevation', 'sx'].includes(prop),
-})<HeaderRootProps>(({ isOffset, disableOffset, disableElevation, theme }) => {
+})<HeaderRootProps>(({ isOffset, disableOffset, disableElevation, theme, ...appBarProps }: HeaderRootProps & { theme: Theme } & Omit<AppBarProps, keyof HeaderRootProps>) => {
   const pauseZindex = { top: -1, bottom: -2 };
 
   const pauseStyles: CSSObject = {
@@ -138,7 +138,7 @@ const HeaderRoot = styled(AppBar, {
 
 const HeaderContainer = styled(Container, {
   shouldForwardProp: (prop: string) => !['layoutQuery', 'sx'].includes(prop),
-})<Pick<HeaderSectionProps, 'layoutQuery'>>(({ layoutQuery = 'md', theme }) => ({
+})<Pick<HeaderSectionProps, 'layoutQuery'>>(({ layoutQuery = 'md', theme }: { layoutQuery?: Breakpoint; theme: Theme }) => ({
   display: 'flex',
   alignItems: 'center',
   color: 'var(--color)',

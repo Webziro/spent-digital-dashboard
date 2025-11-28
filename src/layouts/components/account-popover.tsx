@@ -1,3 +1,4 @@
+import type { Theme } from '@mui/material/styles';
 import type { IconButtonProps } from '@mui/material/IconButton';
 
 import { useState, useCallback } from 'react';
@@ -58,7 +59,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
           p: '2px',
           width: 40,
           height: 40,
-          background: (theme) =>
+          background: (theme: Theme) =>
             `conic-gradient(${theme.vars.palette.primary.light}, ${theme.vars.palette.warning.light}, ${theme.vars.palette.primary.light})`,
           ...sx,
         }}

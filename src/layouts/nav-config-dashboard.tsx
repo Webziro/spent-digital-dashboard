@@ -51,8 +51,13 @@ export const navData = [
 
  {
     title: 'Publication',
-    path: '#',
+    path: '/manage-publications',
     icon: icon('publication'),
+    info: (
+      <Label color="error" variant="inverted">
+        +5
+      </Label>
+    ),
   },
 
   {
