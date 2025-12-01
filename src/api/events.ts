@@ -143,3 +143,4 @@ export async function getFeaturedEvents(): Promise<EventItem[]> {
     throw new Error(`Network error when fetching featured events ${API_BASE}/featured: ${err?.message ?? err}`);
   }
 }
+
