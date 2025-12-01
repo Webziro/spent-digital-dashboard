@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import { getAllEvents } from 'src/api/events';
 import { fetchResearch } from 'src/api/research';
 import { fetchPrograms } from 'src/api/programs';
 import { fetchPublications } from 'src/api/publications';
@@ -49,8 +50,9 @@ export const navData = [
   },
   {
     title: 'Event',
-    path: '#',
+    path: '/manage-events',
     icon: icon('ic-disabled'),
+    info: <RecentEventsCount />,
   },
 
 
@@ -181,6 +183,43 @@ function RecentProgramsCount() {
       } catch (err) {
         if (mounted) setCount(0);
         console.error('RecentProgramsCount fetch error', err);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (count === null) return null;
+  if (count === 0) return null;
+
+  return (
+    <Label color="error" variant="inverted">
+      {`+${count}`}
+    </Label>
+  );
+}
+
+function RecentEventsCount() {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const list = await getAllEvents();
+        const cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 hours
+        const recent = list.filter((e) => {
+          const dateStr = (e.createdAt ?? e.startDate ?? '') || '';
+          const t = Date.parse(dateStr);
+          if (isNaN(t)) return false;
+          return t >= cutoff;
+        }).length;
+        if (mounted) setCount(recent);
+      } catch (err) {
+        if (mounted) setCount(0);
+        console.error('RecentEventsCount fetch error', err);
       }
     })();
 

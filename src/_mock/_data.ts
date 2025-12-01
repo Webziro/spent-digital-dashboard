@@ -20,21 +20,23 @@ export const _myAccount = {
 };
 
 // Publications - fetched from API with real titles and descriptions
-export const _posts = [...Array(23)].map((_, index) => ({
-  id: _id(index),
-  title: _postTitles(index),
-  description: _description(index),
-  coverUrl: `/assets/images/cover/cover-${index + 1}.webp`,
-  totalViews: 8829,
-  totalComments: 7977,
-  totalShares: 8556,
-  totalFavorites: 8870,
-  postedAt: _times(index),
-  author: {
-    name: _fullName(index),
-    avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
+export const _posts = [
+  {
+    id: _id(0),
+    title: _postTitles(0),
+    description: _description(0),
+    coverUrl: `/assets/images/cover/cover-1.webp`,
+    totalViews: 8829,
+    totalComments: 7977,
+    totalShares: 8556,
+    totalFavorites: 8870,
+    postedAt: _times(0),
+    author: {
+      name: _fullName(0),
+      avatarUrl: `/assets/images/avatar/avatar-1.webp`,
+    },
   },
-}));
+];
 
 // ======================== DEMO DASHBOARD DATA (For UI Examples) ========================
 
