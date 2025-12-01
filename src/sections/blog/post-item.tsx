@@ -1,6 +1,7 @@
 import type { CardProps } from '@mui/material/Card';
 import type { IconifyName } from 'src/components/iconify';
 
+import { useNavigate } from 'react-router-dom';
 import { varAlpha } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
@@ -44,6 +45,7 @@ export function PostItem({
   latestPost: boolean;
   latestPostLarge: boolean;
 }) {
+  const navigate = useNavigate();
   const renderAvatar = (
     <Avatar
       alt={post.author.name}
@@ -62,6 +64,8 @@ export function PostItem({
 
   const renderTitle = (
     <Link
+      onClick={() => navigate(`/event/${post.id}`)}
+      component="button"
       color="inherit"
       variant="subtitle2"
       underline="hover"
@@ -75,6 +79,11 @@ export function PostItem({
         ...((latestPostLarge || latestPost) && {
           color: 'common.white',
         }),
+        cursor: 'pointer',
+        textAlign: 'left',
+        border: 'none',
+        background: 'none',
+        padding: 0,
       }}
     >
       {post.title}
@@ -163,7 +172,19 @@ export function PostItem({
   );
 
   return (
-    <Card sx={sx} {...other}>
+    <Card
+      onClick={() => navigate(`/event/${post.id}`)}
+      sx={{
+        ...sx,
+        cursor: 'pointer',
+        transition: 'transform 0.2s, box-shadow 0.2s',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: (theme) => theme.shadows[8],
+        },
+      }}
+      {...other}
+    >
       <Box
         sx={(theme) => ({
           position: 'relative',

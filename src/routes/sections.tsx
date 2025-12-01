@@ -21,6 +21,7 @@ export const ManageResearchPage = lazy(() => import('src/pages/manage-research')
 export const ManagePublicationsPage = lazy(() => import('src/pages/manage-publications'));
 export const ManageProgramsPage = lazy(() => import('src/pages/manage-programs'));
 export const ManageEventsPage = lazy(() => import('src/pages/manage-events'));
+export const EventDetailsPage = lazy(() => import('src/pages/event-details'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
 export const RegisterPage = lazy(() => import('src/pages/register'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
@@ -64,6 +65,7 @@ export const routesSection: RouteObject[] = [
       { path: 'manage-publications', element: <ManagePublicationsPage /> },
       { path: 'manage-programs', element: <ManageProgramsPage /> },
       { path: 'manage-events', element: <ManageEventsPage /> },
+      { path: 'event/:id', element: <EventDetailsPage /> },
       { path: 'publication/:id', element: <PublicationDetailsPage /> },
       { path: 'user', element: <UserPage /> },
       { path: 'products', element: <ProductsPage /> },
