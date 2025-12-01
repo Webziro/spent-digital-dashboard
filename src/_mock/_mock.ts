@@ -1,4 +1,6 @@
-import { Publication, fetchPublications } from 'src/api/publications';
+import type { Publication } from 'src/api/publications';
+
+import { fetchPublications } from 'src/api/publications';
 
 // Runtime cache for live publications fetched from the API. Filled asynchronously below.
 let livePosts: Publication[] = [];
@@ -17,37 +19,40 @@ export const postsPromise = (async function fetchAndCachePosts() {
   }
 })();
 
+// ======================== CORE DATA GENERATORS ========================
+
+// ID generator for mock entities
 export const _id = (index: number) => `e99f09a7-dd88-49d5-b1c8-1daf80c2d7b${index}`;
 
-export const _times = (index: number) =>
-  // 'MM/DD/YYYY'
-  [
-    '11/08/2023',
-    '04/09/2024',
-    '09/12/2023',
-    '01/01/2024',
-    '04/23/2024',
-    '02/29/2024',
-    '05/14/2024',
-    '01/13/2024',
-    '06/22/2024',
-    '10/05/2023',
-    '07/11/2024',
-    '05/22/2024',
-    '03/29/2024',
-    '08/29/2023',
-    '11/19/2023',
-    '10/24/2023',
-    '12/02/2023',
-    '02/13/2024',
-    '09/19/2023',
-    '04/17/2024',
-    '12/18/2023',
-    '06/27/2024',
-    '10/19/2023',
-    '08/09/2024',
-  ][index];
+// ======================== PUBLICATION MOCK DATA ========================
+// Publication titles - fetches from API when available
+export const _postTitles = (index: number) => {
+  // If live posts have been fetched, prefer their titles (wrap index to available length)
+  if (Array.isArray(livePosts) && livePosts.length) {
+    const i = index % livePosts.length;
+    return livePosts[i].title ?? `Publication ${i + 1}`;
+  }
+  // Fallback static titles
+  return ['No new research published recently, post new research'][index];
+};
 
+// Publication descriptions - fetches from API when available
+export const _description = (index: number) => {
+  if (Array.isArray(livePosts) && livePosts.length) {
+    const i = index % livePosts.length;
+    // prefer `description` then `abstract` then `summary` fields from the publication
+    return (
+      livePosts[i].description || livePosts[i].abstract || livePosts[i].summary || `Publication description ${i + 1}`
+    );
+  }
+  return [
+    'Your research publications will appear here once added to the system. Start by creating a new publication to share your work with the community.',
+  ][index];
+};
+
+// ======================== DEMO DASHBOARD DATA (For UI Examples) ========================
+
+// Names for demo user/author data
 export const _fullName = (index: number) =>
   [
     'Billy Stoltenberg',
@@ -76,12 +81,36 @@ export const _fullName = (index: number) =>
     'Willis Ankunding',
   ][index];
 
-export const _price = (index: number) =>
+// Dates for demo data
+export const _times = (index: number) =>
   [
-    35.17, 57.22, 64.78, 50.79, 9.57, 61.46, 96.73, 63.04, 33.18, 36.3, 54.42, 20.52, 62.82, 19.96,
-    25.93, 70.39, 23.11, 67.23, 14.31, 31.5, 26.72, 44.8, 37.87, 75.53,
+    '11/08/2023',
+    '04/09/2024',
+    '09/12/2023',
+    '01/01/2024',
+    '04/23/2024',
+    '02/29/2024',
+    '05/14/2024',
+    '01/13/2024',
+    '06/22/2024',
+    '10/05/2023',
+    '07/11/2024',
+    '05/22/2024',
+    '03/29/2024',
+    '08/29/2023',
+    '11/19/2023',
+    '10/24/2023',
+    '12/02/2023',
+    '02/13/2024',
+    '09/19/2023',
+    '04/17/2024',
+    '12/18/2023',
+    '06/27/2024',
+    '10/19/2023',
+    '08/09/2024',
   ][index];
 
+// Company names for demo user data
 export const _company = (index: number) =>
   [
     'Medhurst, Moore and Franey',
@@ -110,6 +139,7 @@ export const _company = (index: number) =>
     'Streich Group',
   ][index];
 
+// Boolean values for demo verification status
 export const _boolean = (index: number) =>
   [
     true,
@@ -138,31 +168,14 @@ export const _boolean = (index: number) =>
     false,
   ][index];
 
-export const _postTitles = (index: number) => {
-  // If live posts have been fetched, prefer their titles (wrap index to available length)
-  if (Array.isArray(livePosts) && livePosts.length) {
-    const i = index % livePosts.length;
-    return livePosts[i].title ?? `Publication ${i + 1}`;
-  }
-  // Fallback static titles
-  return ['Whiteboard Templates By Industry Leaders'][index];
-};
-
-export const _description = (index: number) => {
-  if (Array.isArray(livePosts) && livePosts.length) {
-    const i = index % livePosts.length;
-    // prefer `description` then `abstract` then `summary` fields from the publication
-    return (
-      livePosts[i].description || livePosts[i].abstract || livePosts[i].summary || `Publication description ${i + 1}`
-    );
-  }
-  return [
-    'The Nagasaki Lander is the trademarked name of several series of Nagasaki sport bikes, that started with the 1984 ABC800J',
+// Product prices for demo e-commerce
+export const _price = (index: number) =>
+  [
+    35.17, 57.22, 64.78, 50.79, 9.57, 61.46, 96.73, 63.04, 33.18, 36.3, 54.42, 20.52, 62.82, 19.96,
+    25.93, 70.39, 23.11, 67.23, 14.31, 31.5, 26.72, 44.8, 37.87, 75.53,
   ][index];
-};
 
-
-
+// Product names for demo e-commerce
 export const _productNames = (index: number) =>
   [
     'Nike Air Force 1 NDESTRUKT',

@@ -118,3 +118,10 @@ export async function deleteProgram(id: string) {
     throw new Error(`Network error when deleting ${API_BASE}/${id}: ${err?.message ?? err}`);
   }
 }
+
+//Create new program
+//Title: AI in Research
+//Description: //Type: Fellowship
+//Application Link: https://example.com/apply
+//Start Date: 2024-06-01
+//Application Deadline: 2024-05-15

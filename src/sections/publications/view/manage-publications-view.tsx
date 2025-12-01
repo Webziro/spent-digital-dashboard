@@ -23,6 +23,8 @@ import DialogContent from '@mui/material/DialogContent';
 import TableContainer from '@mui/material/TableContainer';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { useRouter } from 'src/routes/hooks';
+
 import { DashboardContent } from 'src/layouts/dashboard';
 import { type Publication, createPublication, deletePublication, fetchPublications, updatePublication } from 'src/api/publications';
 
@@ -31,6 +33,7 @@ import { Iconify } from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export function ManagePublicationsView() {
+  const router = useRouter();
   const [items, setItems] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -183,7 +186,16 @@ export function ManagePublicationsView() {
             </TableHead>
             <TableBody>
               {items.map((item) => (
-                <TableRow key={item._id ?? item.title}>
+                <TableRow 
+                  key={item._id ?? item.title}
+                  onClick={() => item._id && router.push(`/publication/${item._id}`)}
+                  sx={{ 
+                    cursor: 'pointer',
+                    '&:hover': { 
+                      backgroundColor: 'action.hover' 
+                    }
+                  }}
+                >
                   <TableCell>
                     <Typography variant="subtitle2">{item.title}</Typography>
                     <Typography variant="body2" color="text.secondary" noWrap>
@@ -207,7 +219,10 @@ export function ManagePublicationsView() {
                       '-'
                     )}
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell 
+                    align="right"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <IconButton size="small" onClick={() => handleEdit(item)}>
                       <Iconify icon="solar:pen-bold" width={16} />
                     </IconButton>

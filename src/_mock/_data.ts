@@ -10,16 +10,35 @@ import {
   _productNames,
 } from './_mock';
 
-// ----------------------------------------------------------------------
+// ======================== CORE DATA ========================
 
+// User account information
 export const _myAccount = {
   displayName: 'Super Admin',
   email: 'admin@spentdigitallab.com',
   photoURL: '/assets/images/avatar/avatar-25.svg',
 };
 
-// ----------------------------------------------------------------------
+// Publications - fetched from API with real titles and descriptions
+export const _posts = [...Array(23)].map((_, index) => ({
+  id: _id(index),
+  title: _postTitles(index),
+  description: _description(index),
+  coverUrl: `/assets/images/cover/cover-${index + 1}.webp`,
+  totalViews: 8829,
+  totalComments: 7977,
+  totalShares: 8556,
+  totalFavorites: 8870,
+  postedAt: _times(index),
+  author: {
+    name: _fullName(index),
+    avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
+  },
+}));
 
+// ======================== DEMO DASHBOARD DATA (For UI Examples) ========================
+
+// Demo users for the user management page
 export const _users = [...Array(24)].map((_, index) => ({
   id: _id(index),
   name: _fullName(index),
@@ -42,26 +61,7 @@ export const _users = [...Array(24)].map((_, index) => ({
     ][index] || 'UI Designer',
 }));
 
-// ----------------------------------------------------------------------
-
-export const _posts = [...Array(23)].map((_, index) => ({
-  id: _id(index),
-  title: _postTitles(index),
-  description: _description(index),
-  coverUrl: `/assets/images/cover/cover-${index + 1}.webp`,
-  totalViews: 8829,
-  totalComments: 7977,
-  totalShares: 8556,
-  totalFavorites: 8870,
-  postedAt: _times(index),
-  author: {
-    name: _fullName(index),
-    avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  },
-}));
-
-// ----------------------------------------------------------------------
-
+// Demo products for e-commerce example
 const COLORS = [
   '#00AB55',
   '#000000',
@@ -95,46 +95,7 @@ export const _products = [...Array(24)].map((_, index) => {
   };
 });
 
-// ----------------------------------------------------------------------
-
-export const _timeline = [...Array(5)].map((_, index) => ({
-  id: _id(index),
-  title: [
-    'Ai and Robotics Conference 2026',
-    'Application for Research Grant',
-    'Order #37745 from September',
-    'New order placed #XF-2356',
-    'New order placed #XF-2346',
-  ][index],
-  type: `order${index + 1}`,
-  time: _times(index),
-}));
-
-// --- Runtime helper: map live research items to timeline entries ---
-import { getLatestResearch } from 'src/api/research';
-
-export async function fetchTimelineFromResearch(limit = 5) {
-  try {
-    const items = await getLatestResearch(limit);
-    return items.map((it) => ({
-      id: it._id ?? it.title,
-      title: it.title,
-      type: 'research',
-      time: it.createdAt ?? new Date().toISOString(),
-    }));
-  } catch {
-    // On error, return the mock timeline as fallback
-    return _timeline;
-  }
-}
-
-// --- Exports for runtime usage ---
-// Promise that resolves to the dynamic timeline (initiated at module load).
-export const timelinePromise = fetchTimelineFromResearch();
-
-// Async helper consumers can call this to get the latest timeline entries.
-export const getTimeline = fetchTimelineFromResearch;
-
+// Demo notifications
 export const _notifications = [
   { 
     id: _id(1),
