@@ -272,7 +272,7 @@ export default function EventDetailsPage() {
               fullWidth
               label="Event Link"
               value={`${window.location.origin}/event/${id}`}
-              readOnly
+              InputProps={{ readOnly: true }}
               onClick={(e) => (e.target as HTMLInputElement).select()}
               sx={{ mb: 2 }}
             />
@@ -284,7 +284,7 @@ export default function EventDetailsPage() {
                 rel="noopener noreferrer"
                 title="Share on Facebook"
               >
-                <Iconify icon="logos:facebook" width={20} />
+                <Iconify icon="socials:facebook" width={20} />
               </IconButton>
               <IconButton
                 color="primary"
@@ -293,7 +293,7 @@ export default function EventDetailsPage() {
                 rel="noopener noreferrer"
                 title="Share on Twitter"
               >
-                <Iconify icon="logos:twitter" width={20} />
+                <Iconify icon="socials:twitter" width={20} />
               </IconButton>
               <IconButton
                 color="primary"
@@ -302,7 +302,7 @@ export default function EventDetailsPage() {
                 rel="noopener noreferrer"
                 title="Share on LinkedIn"
               >
-                <Iconify icon="logos:linkedin" width={20} />
+                <Iconify icon="socials:linkedin" width={20} />
               </IconButton>
             </Stack>
           </Box>
