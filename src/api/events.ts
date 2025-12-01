@@ -12,7 +12,7 @@ export type EventItem = {
   registeredCount?: number;
   isFeatured?: boolean;
   status?: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
-  createdBy?: string;
+  createdBy?: string | { _id: string; name: string; email: string };
   createdAt?: string;
 };
 
@@ -55,7 +55,8 @@ export async function getEventById(id: string) {
       const text = await res.text().catch(() => '');
       throw new Error(`Failed to fetch event (${res.status} ${res.statusText}) ${text}`);
     }
-    return res.json();
+    const body = await res.json();
+    return body.data || body;
   } catch (err: any) {
     throw new Error(`Network error when fetching ${API_BASE}/${id}: ${err?.message ?? err}`);
   }

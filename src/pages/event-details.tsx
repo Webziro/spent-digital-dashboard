@@ -79,24 +79,9 @@ export default function EventDetailsPage() {
 
   const handleShare = () => {
     const eventUrl = `${window.location.origin}/event/${id}`;
-    const text = `${event?.title || 'Check out this event'} - ${event?.description || ''}`;
-
-    // Try Web Share API
-    if (navigator.share) {
-      navigator
-        .share({
-          title: event?.title || 'Event',
-          text,
-          url: eventUrl,
-        })
-        .catch((err) => console.debug('Share failed:', err));
-    } else {
-      // Fallback: copy to clipboard
-      const shareText = `${text}\n\n${eventUrl}`;
-      navigator.clipboard.writeText(shareText).then(() => {
-        setSnackbar({ open: true, message: 'Event link copied to clipboard!', severity: 'success' });
-      });
-    }
+    navigator.clipboard.writeText(eventUrl).then(() => {
+      setSnackbar({ open: true, message: 'Link copied!', severity: 'success' });
+    });
     setShareDialogOpen(false);
   };
 
@@ -242,7 +227,9 @@ export default function EventDetailsPage() {
                 <Typography variant="caption" color="textSecondary" sx={{ fontWeight: 'bold' }}>
                   Organizer
                 </Typography>
-                <Typography variant="body2">{createdBy}</Typography>
+                <Typography variant="body2">
+                  {typeof createdBy === 'object' ? createdBy.name : createdBy}
+                </Typography>
               </Box>
             )}
           </Stack>
